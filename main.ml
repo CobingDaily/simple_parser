@@ -19,6 +19,8 @@ let test_inputs (list: string list) =
 
 let () = 
     (* test_inputs ["3.14"; ".5"; "3."; "."]; *)
-    test_inputs ["3.5 / 4.3"; "3 - 2.1"; "3.2 - 3 / 1"];
-    test_inputs ["let x = 5 in let y = 3 in x + y * 3"]
-
+    test_inputs ["let x = 5 in let y = 3 in x + y * 3"];
+    let calculation = "4 + 2 * 3 - 6 / 3 + 4" in
+    let result = Interp.eval @@ parse calculation in
+    Printf.printf "%i" result
+;;

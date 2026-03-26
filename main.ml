@@ -47,11 +47,8 @@ let () =
     test_inputs ["a == b"; "a == b == c"; "a==b"];
 
     let calculations = [
-        "4 + 2 * 3 - 6 / 3 + 4";
-        "2.5 + 2 * 3";
-        "2 + 2 == 4";
-        "2 == 3";
-        "(1 / 1000.0) * 500";
+        "if (5*5 == 25) then (42 * 3.14) else 0.0";
+        "if (5*5 == 24) then (42 * 3.14) else 0.0"
     ] in 
     log_inputs calculations;
 ;;

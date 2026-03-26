@@ -13,6 +13,7 @@ type expr =
     | BinOp of binop * expr * expr (* op, left, right *)
     | Var of string
     | Let of string * expr * expr (* variable name, value, body*)
+    | IfElse of expr * expr * expr (* condition, then_expr, other_expr *)
 ;;
 
 let rec string_of_expr = function
@@ -32,4 +33,9 @@ let rec string_of_expr = function
             let value = string_of_expr value in
             let body = string_of_expr body in
             Printf.sprintf "(let %s = %s in %s)" name value body
+    | IfElse (condition_expr, then_expr, other_expr) ->
+            let condition = string_of_expr condition_expr in
+            let then_s = string_of_expr then_expr in
+            let other_s = string_of_expr other_expr in
+            Printf.sprintf "(if %s then %s else %s)" condition then_s other_s
 ;;

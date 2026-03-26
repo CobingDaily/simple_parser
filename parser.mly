@@ -10,6 +10,7 @@
 %token LPAREN RPAREN
 %token EQEQ
 %token LET EQUALS IN
+%token IF THEN ELSE
 %token EOF
 
 %left EQEQ
@@ -44,3 +45,5 @@ expr:
         { content }
     | LET; name = IDENT; EQUALS; value = expr; IN; body = expr
         { Let (name, value, body) }
+    | IF; cond = expr; THEN; then_expr = expr; ELSE; other_expr = expr
+        { IfElse (cond, then_expr, other_expr)}

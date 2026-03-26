@@ -14,6 +14,9 @@ rule token = parse
     | "let"                         { LET }
     | "in"                          { IN }
     | "=="                          { EQEQ }
+    | "if"                          { IF }
+    | "then"                        { THEN }
+    | "else"                        { ELSE }
     | alpha alphanum* as id         { IDENT id }
     | '+'                           { PLUS }
     | '-'                           { MINUS }
@@ -23,4 +26,4 @@ rule token = parse
     | '('                           { LPAREN }
     | ')'                           { RPAREN }
     | eof                           { EOF }
-    | _ as c                        { failwith (Printf.sprintf "Unknown character %c" c) }
+    | _ as c                        { failwith (Printf.sprintf "unknown character %c" c) }

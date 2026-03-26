@@ -10,6 +10,11 @@ let rec eval = function
     | Float x -> FloatVal x
     | Var _ -> failwith "var not implemented"
     | Let _ -> failwith "let not implemented"
+    | IfElse (cond_expr, then_expr, other_expr) ->
+            (match (eval cond_expr) with
+            | IntVal x when x = 0 -> eval other_expr
+            | FloatVal x when x = 0.0 -> eval other_expr
+            | _ -> eval then_expr)
     | BinOp (op, left, right) ->
             let left = eval left in
             let right = eval right in

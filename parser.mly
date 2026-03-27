@@ -5,6 +5,7 @@
 
 %token <int> INT
 %token <float> FLOAT
+%token <bool> BOOL
 %token <string> IDENT
 %token PLUS MINUS TIMES OVER
 %token LPAREN RPAREN
@@ -26,9 +27,11 @@ main:
     
 expr:
     | n = INT 
-        { Int n }
+        { Value (Int n) }
     | n = FLOAT
-        { Float n }
+        { Value (Float n) }
+    | b = BOOL
+        { Value (Bool b) }
     | x = IDENT
         { Var x }
     | left = expr; PLUS; right = expr

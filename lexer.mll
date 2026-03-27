@@ -17,6 +17,8 @@ rule token = parse
     | "if"                          { IF }
     | "then"                        { THEN }
     | "else"                        { ELSE }
+    | "true"                        { BOOL (true) }
+    | "false"                       { BOOL (false) }
     | alpha alphanum* as id         { IDENT id }
     | '+'                           { PLUS }
     | '-'                           { MINUS }

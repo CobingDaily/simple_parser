@@ -18,7 +18,6 @@ let _test_inputs (list: string list) =
 ;;
 
 let interpret input =
-    Printf.printf "Input: %S\n" input;
     try
         let result = Interp.interpret @@ parse input in
         print_endline result
@@ -50,7 +49,6 @@ let quit_input = function
 let rec repl_loop () =
     Printf.printf ">>> ";
     let user_input = read_line () in
-    print_endline "";
     if quit_input user_input then ()
     else (interpret user_input; repl_loop ();)
 ;;

@@ -14,22 +14,31 @@ let rec eval = function
     | BinOp (op, left, right) ->
             let left = eval left in
             let right = eval right in
-            let eval_binop = eval_binop left right in
             (match op with
-             | Add -> eval_binop ~op_i:( + ) ~op_f:( +. ) ~op_s:( ^ ) ()
-             | Sub -> eval_binop ~op_i:( - ) ~op_f:( -. ) ()
-             | Mul -> eval_binop ~op_i:( * ) ~op_f:( *. ) ()
-             | Div -> eval_binop ~op_i:( / ) ~op_f:( /. ) ()
+             | Add -> (match (left, right) with
+                        | Int x, Int y -> Int (x + y)
+                        | Float x, Float y -> Float (x +. y)
+                        | String a, String b -> String (a ^ b)
+                        | _ -> failwith "cannot infer types")
+             | Sub -> (match (left, right) with
+                        | Int x, Int y -> Int (x - y)
+                        | Float x, Float y -> Float (x -. y)
+                        | _ -> failwith "cannot infer types")
+             | Mul -> (match (left, right) with
+                        | Int x, Int y -> Int (x * y)
+                        | Float x, Float y -> Float (x *. y)
+                        | Char c, Int n -> String (String.make n c)
+                        | String s, Int n -> 
+                                let list = List.init n (fun _ -> s) in
+                                String (String.concat "" list)
+                        | _ -> failwith "cannot infer types")
+             | Div -> (match (left, right) with
+                        | Int x, Int y -> Int (x / y)
+                        | Float x, Float y -> Float (x /. y)
+                        | _ -> failwith "cannot infer types")
              | Equals -> Bool (left = right))
-
-
-and eval_binop left right ?op_i ?op_f ?op_s () =
-    match (left, right, op_i, op_f, op_s) with
-    | Int x, Int y, Some op, _, _ -> Int (op x y)
-    | Float x, Float y, _, Some op, _ -> Float (op x y)
-    | String s1, String s2, _, _, Some op -> String (op s1 s2)
-    | _ -> failwith (Printf.sprintf "Cannot infer type")
 ;;
+        
 
 let interpret expr =
     let value = eval expr in

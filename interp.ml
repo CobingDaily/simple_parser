@@ -57,7 +57,14 @@ let rec eval env = function
                         | Int x, Int y -> Int (x / y)
                         | Float x, Float y -> Float (x /. y)
                         | _ -> failwith "cannot infer types")
-             | Equals -> Bool (left = right))
+             | Equals -> 
+                     (match (left, right) with
+                       | Int a, Int b       -> Bool (a = b)
+                       | Float a, Float b   -> Bool (a = b)
+                       | Bool a, Bool b     -> Bool (a = b)
+                       | Char a, Char b     -> Bool (a = b)
+                       | String a, String b -> Bool (a = b)
+                       | _ -> failwith "incompatible types for comparison"))
 ;;
         
 

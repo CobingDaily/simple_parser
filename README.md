@@ -5,9 +5,6 @@
 
 >>> 10 * (if true then 10 else 5)
 100
-
->>> "abc" == "a" + "b" + "c"
-true
 ```
 ### Strictly Typed:
 ```
@@ -26,11 +23,17 @@ Error: Failure("cannot infer types")
 ### Boolean Logic:
 ```
 >>> 1 == true
-false
+Error: Failure("incompatible types for comparison")
+
 >>> 1 == false
-false
+Error: Failure("incompatible types for comparison")
+
 >>> 1 == 1
 true
+
 >>> false == false
+true
+
+>>> "abc" == "a" + "b" + "c"
 true
 ```

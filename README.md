@@ -1,25 +1,36 @@
+### Let and If Expressions:
 ```
-Input: "3.5 / 4.3"
-Result: (3.500000f / 4.300000f)
+>>> let a = "abc" in (a * 15)
+"abcabcabcabcabcabcabcabcabcabcabcabcabcabcabc"
 
-Input: "3 - 2.1"
-Result: (3 - 2.100000f)
+>>> 10 * (if true then 10 else 5)
+100
 
-Input: "3.2 - 3 / 1"
-Result: (3.200000f - (3 / 1))
-
-Input: "let x = 5 in let y = 3 in x + y * 3"
-Result: (let x = 5 in (let y = 3 in (x + (y * 3))))
+>>> "abc" == "a" + "b" + "c"
+true
 ```
-### If Else Expressions
+### Strictly Typed:
 ```
-------------------------------                                                                   
-Input: "if (5*5 == 25) then (42 * 3.14) else 0.0"                                                
-Result: (if ((5 * 5) == 25) then (42 * 3.140000f) else 0.000000f)                                
-131.880000                                                                                       
-------------------------------                                                                   
-Input: "if (5*5 == 24) then (42 * 3.14) else 0.0"                                                
-Result: (if ((5 * 5) == 24) then (42 * 3.140000f) else 0.000000f)                                
-0.000000                                                                                         
-------------------------------                                                                   
+>>> 3/2
+1
+
+>>> 3.0/2.0
+1.500000
+
+>>> 3.0 / 2
+Error: Failure("cannot infer types")
+
+>>> let pi = 3.14 in pi / 4.0
+0.785000
+```
+### Boolean Logic:
+```
+>>> 1 == true
+false
+>>> 1 == false
+false
+>>> 1 == 1
+true
+>>> false == false
+true
 ```

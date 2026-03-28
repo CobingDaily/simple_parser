@@ -1,9 +1,16 @@
 open Ast
 
+let tbl = Hashtbl.create 16
+
 let rec eval = function
     | Value value -> value
-    | Var _ -> failwith "var not implemented"
-    | Let _ -> failwith "let not implemented"
+    | Var x -> let value_opt = Hashtbl.find_opt tbl x in
+                (match value_opt with
+                | Some value -> value
+                | None -> failwith (Printf.sprintf "Unknown variable %s" x))
+    | Let (name, value, body) -> 
+            Hashtbl.replace tbl name (eval (value));
+            eval body
     | IfElse (cond_expr, then_expr, other_expr) ->
             (match (eval cond_expr) with
             | Bool false

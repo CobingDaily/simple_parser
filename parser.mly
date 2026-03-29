@@ -10,7 +10,6 @@
 %token <string> STRING
 %token <string> IDENT
 %token PLUS MINUS TIMES OVER
-%token DQUOTE
 %token LPAREN RPAREN
 %token EQEQ
 %token LET EQUALS IN
@@ -41,6 +40,8 @@ expr:
         { Value (String s) }
     | x = IDENT
         { Var x }
+    | MINUS; operand = expr
+        { UnOp (UnaryMinus, operand) }
     | left = expr; PLUS; right = expr
         { BinOp (Add, left, right) }
     | left = expr; MINUS; right = expr

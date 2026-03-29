@@ -1,3 +1,6 @@
+type unop =
+    | UnaryMinus
+;;
 
 type binop = 
     | Add
@@ -13,13 +16,15 @@ type value =
     | Bool of bool
     | Char of char
     | String of string
+;;
 
 type expr =
     | Value of value
-    | BinOp of binop * expr * expr (* op, left, right *)
+    | BinOp of binop * expr * expr  (* op, left, right *)
+    | UnOp of unop * expr           (* op, expr *)
     | Var of string
-    | Let of string * expr * expr (* variable name, value, body*)
-    | IfElse of expr * expr * expr (* condition, then_expr, other_expr *)
+    | Let of string * expr * expr   (* variable name, value, body*)
+    | IfElse of expr * expr * expr  (* condition, then_expr, other_expr *)
 ;;
 
 let rec string_of_expr = function
@@ -31,6 +36,10 @@ let rec string_of_expr = function
             | Bool   b -> if b then "true" else "false"
             | Char   c -> Printf.sprintf "%C" c
             | String s -> Printf.sprintf "%S" s)
+    | UnOp (op, expr) ->
+            let s = string_of_expr expr in
+            (match op with
+                | UnaryMinus -> Printf.sprintf "(-%s)" s)
     | BinOp (op, left, right) ->
             let l_expr = string_of_expr left in
             let r_expr = string_of_expr right in

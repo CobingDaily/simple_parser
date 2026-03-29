@@ -32,6 +32,13 @@ let rec eval env = function
             | Int 0
             | Float 0.0 -> eval env other_expr
             | _ -> eval env then_expr)
+    | UnOp (op, expr) ->
+            (match op with
+            | UnaryMinus -> 
+                    (match (eval env expr) with
+                     | Int x -> Int (-x)
+                     | Float x -> Float (-.x)
+                     | _ -> failwith "Unary Minus needs Int/Float operand"))
     | BinOp (op, left, right) ->
             let left = eval env left in
             let right = eval env right in

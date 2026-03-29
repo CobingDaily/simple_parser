@@ -25,14 +25,6 @@ let rec eval env = function
             let env' = define name value env in
             (eval env' body)
     | Func (param_name, body) -> Closure (param_name, body, env)
-    | Apply (f_expr, arg_expr) ->
-            let func = eval env f_expr in
-            let arg = eval env arg_expr in
-            (match func with
-             | Closure (param_name, body, closed_env) ->
-                     let env' = define param_name arg closed_env in
-                     eval env' body
-             | _ -> failwith "Not a function")
     | IfElse (cond_expr, then_expr, other_expr) ->
             (match (eval env cond_expr) with
             | Bool false
@@ -79,7 +71,15 @@ let rec eval env = function
                        | Bool a, Bool b     -> Bool (a = b)
                        | Char a, Char b     -> Bool (a = b)
                        | String a, String b -> Bool (a = b)
-                       | _ -> failwith "incompatible types for comparison"))
+                       | _ -> failwith "incompatible types for comparison")
+             | Apply ->
+                     let func = left in
+                     let arg = right in
+                     (match func with
+                     | Closure (param_name, body, closed_env) ->
+                             let env' = define param_name arg closed_env in
+                             eval env' body
+                     | _ -> failwith "Not a function"))
 ;;
 
 let string_of_value = function

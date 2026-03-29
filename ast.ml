@@ -11,6 +11,7 @@ and binop =
     | Mul
     | Div
     | Equals
+    | Apply
 
 and value =
     | Int of int
@@ -28,7 +29,6 @@ and expr =
     | Let of string * expr * expr   (* variable name, value, body*)
     | IfElse of expr * expr * expr  (* condition, then_expr, other_expr *)
     | Func of string * expr         (* param name -> expr *)
-    | Apply of expr * expr          (* func name, argument *)
 ;;
 
 let rec string_of_expr = function
@@ -53,7 +53,8 @@ let rec string_of_expr = function
                 | Sub    -> Printf.sprintf "(%s - %s)" l_expr r_expr
                 | Mul    -> Printf.sprintf "(%s * %s)" l_expr r_expr
                 | Div    -> Printf.sprintf "(%s / %s)" l_expr r_expr
-                | Equals -> Printf.sprintf "(%s == %s)" l_expr r_expr)
+                | Equals -> Printf.sprintf "(%s == %s)" l_expr r_expr
+                | Apply  -> Printf.sprintf "(%s %s)" l_expr r_expr)
     | Let (name, value, body) ->
             let value = string_of_expr value in
             let body = string_of_expr body in
@@ -66,8 +67,4 @@ let rec string_of_expr = function
     | Func (left, right) ->
             let right = string_of_expr right in
             Printf.sprintf "(%s -> %s)" left right
-    | Apply (func_expr, arg_expr) ->
-            let f = string_of_expr func_expr in
-            let arg = string_of_expr arg_expr in
-            Printf.sprintf "(%s %s)" f arg
 ;;

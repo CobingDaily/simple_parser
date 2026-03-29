@@ -28,6 +28,7 @@ rule token = parse
     | "in"                          { IN }
     | "=="                          { EQEQ }
     | "->"                          { RARROW }
+    | "|>"                          { PIPE }
     | "if"                          { IF }
     | "then"                        { THEN }
     | "else"                        { ELSE }

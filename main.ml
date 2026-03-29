@@ -8,7 +8,7 @@ let interpret input =
     try
         let ast = parse input in
         let result = Interp.interpret ast in
-        (* print_endline (Ast.string_of_expr ast); *)
+        print_endline (Ast.string_of_expr ast);
         print_endline result
     with e ->
         Printf.printf "Error: %s\n" (Printexc.to_string e)

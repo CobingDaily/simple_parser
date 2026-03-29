@@ -1,0 +1,81 @@
+
+** Conflict (shift/reduce) in state 39.
+** Tokens involved: TIMES PLUS OVER MINUS EQEQ
+** The following explanations concentrate on token TIMES.
+** This state is reached from main after reading:
+
+LET IDENT EQUALS expr IN expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+main 
+expr EOF 
+(?)
+
+** In state 39, looking ahead at TIMES, shifting is permitted
+** because of the following sub-derivation:
+
+LET IDENT EQUALS expr IN expr 
+                         expr . TIMES expr 
+
+** In state 39, looking ahead at TIMES, reducing production
+** expr -> LET IDENT EQUALS expr IN expr
+** is permitted because of the following sub-derivation:
+
+expr TIMES expr // lookahead token appears
+LET IDENT EQUALS expr IN expr . 
+
+** Conflict (shift/reduce) in state 36.
+** Tokens involved: TIMES PLUS OVER MINUS EQEQ
+** The following explanations concentrate on token TIMES.
+** This state is reached from main after reading:
+
+IF expr THEN expr ELSE expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+main 
+expr EOF 
+(?)
+
+** In state 36, looking ahead at TIMES, shifting is permitted
+** because of the following sub-derivation:
+
+IF expr THEN expr ELSE expr 
+                       expr . TIMES expr 
+
+** In state 36, looking ahead at TIMES, reducing production
+** expr -> IF expr THEN expr ELSE expr
+** is permitted because of the following sub-derivation:
+
+expr TIMES expr // lookahead token appears
+IF expr THEN expr ELSE expr . 
+
+** Conflict (shift/reduce) in state 14.
+** Tokens involved: TIMES PLUS OVER MINUS EQEQ
+** The following explanations concentrate on token TIMES.
+** This state is reached from main after reading:
+
+IDENT RARROW expr
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+main 
+expr EOF 
+(?)
+
+** In state 14, looking ahead at TIMES, reducing production
+** expr -> IDENT RARROW expr
+** is permitted because of the following sub-derivation:
+
+expr TIMES expr // lookahead token appears
+IDENT RARROW expr . 
+
+** In state 14, looking ahead at TIMES, shifting is permitted
+** because of the following sub-derivation:
+
+IDENT RARROW expr 
+             expr . TIMES expr 

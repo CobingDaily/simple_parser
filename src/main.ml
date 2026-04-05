@@ -14,4 +14,4 @@ let interpret (filename: string) =
         Printf.printf "Error: %s\n" (Printexc.to_string e)
 ;;
 
-let () = interpret "code";;
+let () = interpret "code.example";;

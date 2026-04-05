@@ -1,8 +1,5 @@
 open Ast
 
-module StringMap = Map.Make(String)
-let empty_env = [StringMap.empty]
-
 let rec eval env = function
     | Value value -> value
     | Var name -> lookup name env
@@ -70,6 +67,7 @@ let rec eval env = function
 ;;
 
 let interpret expr =
+    let empty_env = [StringMap.empty] in
     let value = eval empty_env expr in
     string_of_value value
 ;;

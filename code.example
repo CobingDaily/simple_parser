@@ -1,0 +1,9 @@
+let apply_twice = func -> arg ->
+    func (func arg)
+in
+
+let incr_by_2 = n ->
+    (apply_twice (x -> x + 1) n)
+in
+
+incr_by_2 5

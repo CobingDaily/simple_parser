@@ -23,28 +23,8 @@ y -> ((3 * 3) + (y * y)
 >>> 10 * (if true then 10 else 5)
 100
 ```
-### Strictly Typed:
-```
->>> 3/2
-1
-
->>> 3.0/2.0
-1.500000
-
->>> 3.0 / 2
-Error: Failure("cannot infer types")
-
->>> let pi = 3.14 in pi / 4.0
-0.785000
-```
 ### Boolean Logic:
 ```
->>> 1 == true
-Error: Failure("incompatible types for comparison")
-
->>> 1 == false
-Error: Failure("incompatible types for comparison")
-
 >>> 1 == 1
 true
 
@@ -54,3 +34,6 @@ true
 >>> "abc" == "a" + "b" + "c"
 true
 ```
+### Typechecking
+>>> if (3 > 2) then 4 else 5.2
+Error: Failure("Types in both branches of `if` must match")

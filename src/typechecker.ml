@@ -6,7 +6,7 @@ type type' =
     | BoolT
     | CharT
     | StringT
-    | FunctionT of type' * type' (* a function type is type' -> type' *)
+    (* | FunctionT of type' * type' (* a function type is type' -> type' *) *)
 ;;
 
 let type_of_value = function
@@ -19,9 +19,37 @@ let type_of_value = function
     (* | Closure _ -> FunctionT *)
 ;;
 
+let tc_arithmetic = function
+    | (IntT, IntT) -> IntT
+    | (FloatT, FloatT) -> FloatT
+    | _ -> failwith "Incompatible addition types"
+;;
+
+let tc_comparison = function
+    | IntT, IntT       -> BoolT
+    | FloatT, FloatT   -> BoolT
+    | BoolT, BoolT     -> BoolT
+    | CharT, CharT     -> BoolT
+    | StringT, StringT -> BoolT
+    | _ -> failwith "Incompatible types for comparison"
+;;
+
+let tc_binop binop left_type right_type =
+    match binop with
+    | Add | Sub | Mul | Div -> tc_arithmetic (left_type, right_type)
+    | Equals       -> tc_comparison (left_type, right_type)
+    | GreaterThan  -> tc_comparison (left_type, right_type)
+    | LessThan     -> tc_comparison (left_type, right_type)
+    | GreaterEqual -> tc_comparison (left_type, right_type)
+    | LessEqual    -> tc_comparison (left_type, right_type)
+;;
+
 let rec run_tc = function
     | Value v -> type_of_value v
-    | BinOp (binop, left_expr, right_expr) -> failwith "todo"
+    | BinOp (binop, left_expr, right_expr) -> 
+            let left_type = run_tc left_expr in
+            let right_type = run_tc right_expr in
+            tc_binop binop left_type right_type
     | IfElse (test_expr, then_expr, else_expr) ->
             let test_type = run_tc test_expr in
             let then_type = run_tc then_expr in

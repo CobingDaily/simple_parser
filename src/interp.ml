@@ -136,6 +136,7 @@ let rec do_apply = function
 
 let interpret expr =
     let empty_env = [StringMap.empty] in
+    let _type = Typechecker.run_tc expr in
     let value = eval empty_env expr in
     string_of_value value
 ;;

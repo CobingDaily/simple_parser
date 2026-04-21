@@ -35,5 +35,7 @@ true
 true
 ```
 ### Typechecking
+```
 >>> if (3 > 2) then 4 else 5.2
 Error: Failure("Types in both branches of `if` must match")
+```

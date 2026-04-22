@@ -54,8 +54,20 @@ let tc_binop binop left_type right_type =
     | LessEqual    -> tc_comparison (left_type, right_type)
 ;;
 
+let tc_unop op expr_type =
+  match op with
+  | UnaryMinus -> 
+      begin match expr_type with
+      | IntT -> IntT
+      | FloatT -> FloatT
+      | _ -> fail_tc "negated unexpected type"
+      end
+
 let rec run_tc = function
     | Value v -> type_of_value v
+    | UnOp (op, expr) ->
+        let expr_type = run_tc expr in
+        tc_unop op expr_type
     | BinOp (binop, left_expr, right_expr) -> 
             let left_type = run_tc left_expr in
             let right_type = run_tc right_expr in

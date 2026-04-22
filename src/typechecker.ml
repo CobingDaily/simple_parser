@@ -9,6 +9,8 @@ type type' =
     (* | FunctionT of type' * type' (* a function type is type' -> type' *) *)
 ;;
 
+let fail_tc message = failwith ("Typechecker: " ^ message)
+
 let type_of_value = function
     | Int _     -> IntT
     | Float _   -> FloatT
@@ -20,9 +22,17 @@ let type_of_value = function
 ;;
 
 let tc_arithmetic = function
-    | (IntT, IntT) -> IntT
-    | (FloatT, FloatT) -> FloatT
-    | _ -> failwith "Incompatible addition types"
+    | (_, IntT, IntT) -> IntT
+    | (_, FloatT, FloatT) -> FloatT
+    | (binop, _, _)-> 
+        let operation = match binop with
+        | Add -> "addition"
+        | Sub -> "subtraction"
+        | Mul -> "multiplication"
+        | Div -> "division"
+        | _ -> fail_tc "unexpected arithmetic operation"
+        in
+        fail_tc ("Incompatible types in " ^ operation)
 ;;
 
 let tc_comparison = function
@@ -31,12 +41,12 @@ let tc_comparison = function
     | BoolT, BoolT     -> BoolT
     | CharT, CharT     -> BoolT
     | StringT, StringT -> BoolT
-    | _ -> failwith "Incompatible types for comparison"
+    | _ -> fail_tc "Incompatible types for comparison"
 ;;
 
 let tc_binop binop left_type right_type =
     match binop with
-    | Add | Sub | Mul | Div -> tc_arithmetic (left_type, right_type)
+    | Add | Sub | Mul | Div -> tc_arithmetic (binop, left_type, right_type)
     | Equals       -> tc_comparison (left_type, right_type)
     | GreaterThan  -> tc_comparison (left_type, right_type)
     | LessThan     -> tc_comparison (left_type, right_type)
@@ -57,8 +67,8 @@ let rec run_tc = function
             begin match (test_type) with
             | BoolT -> 
                     if then_type = else_type then then_type
-                    else failwith "Types in both branches of `if` must match"
-            | _ -> failwith "Expected Bool in if (...)"
+                    else fail_tc "Types in both branches of `if` must match"
+            | _ -> fail_tc "Expected Bool in if (...)"
             end
     | _ -> failwith "not implemented"
   (*   | BinOp of binop * expr * expr *)

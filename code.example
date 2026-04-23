@@ -1,9 +1,6 @@
-let apply_twice = func -> arg ->
-    func (func arg)
+let rec factorial = x ->
+  if x <= 1 then 1
+  else x * factorial (x-1)
 in
 
-let incr_by_2 = n ->
-    (apply_twice (x -> x + 1) n)
-in
-
-incr_by_2 5
+factorial 5

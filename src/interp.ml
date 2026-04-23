@@ -91,7 +91,7 @@ let is_true = function
 
 let rec do_apply = function
   | Closure (param_name, body_expr, closed_env), arg_value ->
-      let env' = define param_name arg_value closed_env in
+      let env' = define param_name arg_value !closed_env in
       eval env' body_expr
   | _ -> failwith "not a function"
 
@@ -103,8 +103,18 @@ and eval env = function
       let value = eval env expr in
       let env' = define name value env in
       (eval env' body_expr)
+  | LetRec (name, expr, body_expr) -> 
+      let env_ref = ref env in
+      let value = eval !env_ref expr in
+      env_ref := define name value !env_ref;
+      begin match value with
+      | Closure (_, _, closure_env_ref) -> closure_env_ref := !env_ref;
+      | _ -> ()
+      end;
+      eval !env_ref body_expr
   | Func (param_name, body_expr) -> 
-      Closure (param_name, body_expr, env)
+      let env_ref = ref env in
+      Closure (param_name, body_expr, env_ref)
   | Apply (func_expr, arg_expr) -> 
      let func_value = eval env func_expr in
      let arg_value = eval env arg_expr in

@@ -25,6 +25,7 @@ rule token = parse
                                                     c))}
     | '\"' (not_quote* as str) '\"' { STRING (str) }
     | "let"                         { LET }
+    | "let rec"                     { LETREC }
     | "in"                          { IN }
     | "=="                          { EQEQ }
     | ">"                           { GT }

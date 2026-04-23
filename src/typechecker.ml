@@ -92,6 +92,11 @@ let rec run_tc t_env = function
         let value_type = run_tc t_env value_expr in
         let t_env' = define_type name value_type t_env in
         run_tc t_env' body_expr
+    | LetRec (name, value_expr, body_expr) ->
+        let t_env_ref = ref t_env in
+        let value_type = run_tc !t_env_ref value_expr in
+        t_env_ref := define_type name value_type !t_env_ref;
+        run_tc !t_env_ref body_expr
     | Func _ ->  ClosureT (* For now skip function typechecking *)
     | Apply (func_expr, _) -> 
        (* The only "compile-time" type check we can do

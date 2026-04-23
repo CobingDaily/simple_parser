@@ -22,17 +22,19 @@ and value =
     | Bool of bool
     | Char of char
     | String of string
-    | Closure of string * expr * env (* param, body, captured env*)
-
+    | Closure of string * expr * env ref (* (param, body, mutable env)
+                                            Mutable env for tying the
+                                            recursive knot in letrec. *)
 and expr =
     | Value of value
-    | BinOp of binop * expr * expr  (* op, left, right *)
-    | UnOp of unop * expr           (* op, expr *)
-    | Var of string                 (* variable name *)
-    | Let of string * expr * expr   (* variable name, value, body *)
-    | IfElse of expr * expr * expr  (* condition, then_expr, other_expr *)
-    | Func of string * expr         (* param name -> expr *)
-    | Apply of expr * expr          (* function_expr argument_expr *)
+    | BinOp of binop * expr * expr     (* op, left, right *)
+    | UnOp of unop * expr              (* op, expr *)
+    | Var of string                    (* variable name *)
+    | Let of string * expr * expr      (* variable name, value, body *)
+    | LetRec of string * expr * expr   (* variable name, value, body *)
+    | IfElse of expr * expr * expr     (* condition, then_expr, other_expr *)
+    | Func of string * expr            (* param name -> expr *)
+    | Apply of expr * expr             (* function_expr argument_expr *)
 ;;
 
 let rec define name value = function
@@ -67,7 +69,8 @@ and string_of_value = function
 
 and string_of_expr env = function
     | Value v -> string_of_value v
-    | Var name -> (match (lookup_opt name env) with
+    | Var name -> 
+        (match (lookup_opt name !env) with
                    | None -> name
                    | Some v -> string_of_value v)
 
@@ -92,6 +95,10 @@ and string_of_expr env = function
             let value = string_of_expr env value in
             let body = string_of_expr env body in
             Printf.sprintf "(let %s = %s in %s)" name value body
+    | LetRec (name, value, body) ->
+            let value = string_of_expr env value in
+            let body = string_of_expr env body in
+            Printf.sprintf "(let rec %s = %s in %s)" name value body
     | IfElse (condition_expr, then_expr, other_expr) ->
             let condition = string_of_expr env condition_expr in
             let then_s = string_of_expr env then_expr in

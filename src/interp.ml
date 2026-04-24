@@ -16,7 +16,9 @@ let do_sub = function
 let do_mul = function
   | Int x, Int y -> Int (x * y)
   | Float x, Float y -> Float (x *. y)
-  | Char c, Int n -> String (String.make n c)
+  | Char c, Int n
+  | Int n, Char c -> String (String.make n c)
+  | Int n, String s
   | String s, Int n -> 
       let list = List.init n (fun _ -> s) in
       String (String.concat "" list)

@@ -1,6 +1,8 @@
 open Ast
 module StringMap = Map.Make(String)
 
+let fail_tc message = failwith ("Typechecker: " ^ message)
+
 type type' =
     | IntT
     | FloatT
@@ -18,7 +20,6 @@ let define_type name (t : type') = function
     | scope :: rest -> (StringMap.add name t scope) :: rest
 ;;
 
-
 let rec lookup_type_opt name = function
     | [] -> None
     | scope :: rest ->
@@ -28,8 +29,6 @@ let rec lookup_type_opt name = function
             end
 ;;
 
-let fail_tc message = failwith ("Typechecker: " ^ message)
-
 let type_of_value = function
     | Int _     -> IntT
     | Float _   -> FloatT
@@ -37,20 +36,6 @@ let type_of_value = function
     | Char _    -> CharT
     | String _  -> StringT
     | Closure _ -> ClosureT
-;;
-
-let tc_arithmetic = function
-    | (_, IntT, IntT) -> IntT
-    | (_, FloatT, FloatT) -> FloatT
-    | (binop, _, _)-> 
-        let operation = match binop with
-        | Add -> "addition"
-        | Sub -> "subtraction"
-        | Mul -> "multiplication"
-        | Div -> "division"
-        | _ -> fail_tc "unexpected arithmetic operation"
-        in
-        fail_tc ("incompatible types in " ^ operation)
 ;;
 
 let tc_comparison = function
@@ -62,9 +47,40 @@ let tc_comparison = function
     | _ -> fail_tc "incompatible types for comparison"
 ;;
 
+let tc_addition = function
+    | (IntT, IntT) -> IntT
+    | (FloatT, FloatT) -> FloatT
+    | (StringT, StringT) -> StringT
+    | _ -> fail_tc "incompatible types for addition"
+;;
+
+let tc_subtraction = function
+    | (IntT, IntT) -> IntT
+    | (FloatT, FloatT) -> FloatT
+    | _ -> fail_tc "incompatible types for subtraction"
+;;
+
+let tc_multiplication = function
+    | (IntT, IntT) -> IntT
+    | (FloatT, FloatT) -> FloatT
+    | (CharT, IntT) | (IntT, CharT) -> StringT
+    | (StringT, IntT) | (IntT, StringT) -> StringT
+    | _ -> fail_tc "incompatible types for multiplication"
+;;
+
+let tc_division = function
+    | (IntT, IntT) -> IntT
+    | (FloatT, FloatT) -> FloatT
+    | _ -> fail_tc "incompatible types for division"
+;;
+
+
 let tc_binop binop left_type right_type =
     match binop with
-    | Add | Sub | Mul | Div -> tc_arithmetic (binop, left_type, right_type)
+    | Add -> tc_addition       (left_type, right_type)
+    | Sub -> tc_subtraction    (left_type, right_type)
+    | Mul -> tc_multiplication (left_type, right_type)
+    | Div -> tc_division       (left_type, right_type)
     | Equals       -> tc_comparison (left_type, right_type)
     | GreaterThan  -> tc_comparison (left_type, right_type)
     | LessThan     -> tc_comparison (left_type, right_type)
@@ -80,6 +96,7 @@ let tc_unop op expr_type =
       | FloatT -> FloatT
       | _ -> fail_tc "negated unexpected type"
       end
+;;
 
 let rec run_tc t_env = function
     | Value v -> type_of_value v

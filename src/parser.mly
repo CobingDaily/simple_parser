@@ -13,7 +13,7 @@
 %token LPAREN RPAREN
 %token EQEQ GT LT GE LE
 %token RARROW PIPE COMPOSE
-%token LET LETREC EQUALS IN
+%token LET REC EQUALS IN
 %token IF THEN ELSE
 %token EOF
 
@@ -28,7 +28,7 @@ expr:
         { Func (p, right) }
     | LET; name = IDENT; EQUALS; value = expr; IN; body = expr
         { Let (name, value, body) }
-    | LETREC; name = IDENT; EQUALS; value = expr; IN; body = expr
+    | LET; REC; name = IDENT; EQUALS; value = expr; IN; body = expr
         { LetRec (name, value, body) }
     | IF; cond = expr; THEN; then_expr = expr; ELSE; other_expr = expr
         { IfElse (cond, then_expr, other_expr) }

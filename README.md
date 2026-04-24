@@ -1,3 +1,5 @@
+# λynx
+> Functional programming language inspired by OCaml and Racket
 ### Functions
 ```
 >>> let add = x -> y -> x + y in

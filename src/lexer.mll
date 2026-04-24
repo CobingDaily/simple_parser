@@ -34,6 +34,7 @@ rule token = parse
     | "<="                          { LE }
     | "->"                          { RARROW }
     | "|>"                          { PIPE }
+    | "o"                           { COMPOSE }
     | "if"                          { IF }
     | "then"                        { THEN }
     | "else"                        { ELSE }

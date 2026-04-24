@@ -1,9 +1,5 @@
-let apply_twice = func -> arg ->
-    func (func arg)
+let apply_thrice = func -> arg ->
+    func o func o func arg
 in
 
-let incr_by_2 = n ->
-    (apply_twice (x -> x + 1) n)
-in
-
-incr_by_2 5
+apply_thrice (x -> x + 1) 2

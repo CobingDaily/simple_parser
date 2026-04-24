@@ -12,7 +12,7 @@
 %token PLUS MINUS TIMES OVER
 %token LPAREN RPAREN
 %token EQEQ GT LT GE LE
-%token RARROW PIPE
+%token RARROW PIPE COMPOSE
 %token LET LETREC EQUALS IN
 %token IF THEN ELSE
 %token EOF
@@ -61,11 +61,16 @@ add_expr:
         { UnOp (UnaryMinus, operand) }
 
 mul_expr:
-    | e = app_expr { e }
+    | e = compose_expr { e }
     | left = mul_expr; TIMES; right = app_expr
         { BinOp (Mul, left, right) }
     | left = mul_expr; OVER; right = app_expr
         { BinOp (Div, left, right) }
+
+compose_expr:
+    | e = app_expr { e }
+    | func = app_expr; COMPOSE; arg = compose_expr
+        { Apply (func, arg) }
 
 app_expr:
     | e = atom_expr { e }

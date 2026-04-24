@@ -25,17 +25,13 @@ fib 10
 > This will evaluate to: `55`
 ### Higher Order Functions
 ```
-let apply_twice = func -> arg ->
-    func (func arg)
+let apply_thrice = func -> arg ->
+    func o func o func arg
 in
 
-let incr_by_2 = n ->
-    (apply_twice (x -> x + 1) n)
-in
-
-incr_by_2 5
+apply_thrice (x -> x + 1) 2
 ```
-> This will evaluate to: `7`
+> This will evaluate to: `5`
 ### Partial Applications
 ```
 >>> ((x -> y -> ((x -> x*x) x + (x -> x*x) y)) 3 4)

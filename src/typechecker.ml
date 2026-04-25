@@ -104,6 +104,14 @@ let tc_unop op expr_type =
       end
 ;;
 
+let tc_list = function
+  | [] -> ListT (None)
+  | (hd :: _) as type_list ->
+    let items_same_type = List.for_all (fun ty -> ty = hd) type_list in
+    if items_same_type then ListT (Some hd)
+    else fail_tc "list items must be of same type"
+;;
+
 let rec run_tc t_env = function
     | Value v -> type_of_value v
     | Var name ->
@@ -112,15 +120,8 @@ let rec run_tc t_env = function
         | None -> fail_tc ("unbound variable " ^ name)
         end
     | ListExpr expr_list ->
-        let f = run_tc t_env in
-        let type_list = List.map f expr_list in
-        begin match type_list with
-        | [] -> ListT (None)
-        | hd :: _ ->
-          let items_same_type = List.for_all (fun ty -> ty = hd) type_list in
-          if items_same_type then ListT (Some hd)
-          else fail_tc "list items must be of same type"
-        end
+        let type_list = List.map (run_tc t_env) expr_list in
+        tc_list type_list
     | Let (name, value_expr, body_expr) ->
         let value_type = run_tc t_env value_expr in
         let t_env' = define_type name value_type t_env in

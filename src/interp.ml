@@ -98,9 +98,12 @@ let rec do_apply = function
   | _ -> failwith "not a function"
 
 
+
 and eval env = function
   | Value value -> value
   | Var name -> lookup name env
+  | ListExpr expr_list ->
+      List (List.map (eval env) expr_list)
   | Let (name, expr, body_expr) -> 
       let value = eval env expr in
       let env' = define name value env in

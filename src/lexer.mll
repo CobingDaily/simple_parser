@@ -48,5 +48,8 @@ rule token = parse
     | '='                           { EQUALS }
     | '('                           { LPAREN }
     | ')'                           { RPAREN }
+    | '['                           { LBRACKET }
+    | ']'                           { RBRACKET }
+    | ','                           { COMMA }
     | eof                           { EOF }
     | _ as c                        { failwith (Printf.sprintf "unknown character %c" c) }

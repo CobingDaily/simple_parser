@@ -25,6 +25,8 @@ and value =
     | Closure of string * expr * env ref (* (param, body, mutable env)
                                             Mutable env for tying the
                                             recursive knot in letrec. *)
+    | List of value list
+
 and expr =
     | Value of value
     | BinOp of binop * expr * expr     (* op, left, right *)
@@ -35,6 +37,7 @@ and expr =
     | IfElse of expr * expr * expr     (* condition, then_expr, other_expr *)
     | Func of string * expr            (* param name -> expr *)
     | Apply of expr * expr             (* function_expr argument_expr *)
+    | ListExpr of expr list
 ;;
 
 let rec define name value = function
@@ -65,6 +68,12 @@ and string_of_value = function
     | Closure (param_name, body, env) ->
             let s = string_of_expr env body in
             Printf.sprintf "%s -> %s" param_name s
+    | List l ->
+        begin match l with
+        | [] -> ""
+        | hd :: tl -> (string_of_value hd) ^ ", " ^ (string_of_value (List tl))
+        end
+          
         
 
 and string_of_expr env = function
@@ -73,6 +82,11 @@ and string_of_expr env = function
         (match (lookup_opt name !env) with
                    | None -> name
                    | Some v -> string_of_value v)
+    | ListExpr le ->
+        begin match le with
+        | [] -> ""
+        | hd :: tl -> (string_of_expr env hd) ^ ", " ^ (string_of_expr env (ListExpr tl))
+        end
 
     | UnOp (op, expr) ->
             let s = string_of_expr env expr in

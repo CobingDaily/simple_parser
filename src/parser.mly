@@ -11,6 +11,7 @@
 %token <string> IDENT
 %token PLUS MINUS TIMES OVER
 %token LPAREN RPAREN
+%token LBRACKET RBRACKET COMMA
 %token EQEQ GT LT GE LE
 %token RARROW PIPE COMPOSE
 %token LET REC EQUALS IN
@@ -85,3 +86,10 @@ atom_expr:
     | s = STRING    { Value (String s) }
     | x = IDENT     { Var x }
     | LPAREN; content = expr; RPAREN { content }
+    | LBRACKET; items = expr_list; RBRACKET { ListExpr items }
+
+expr_list:
+    | { [] }
+    | e = expr                          { [e] }
+    | e = expr; COMMA; rest = expr_list { e :: rest }
+

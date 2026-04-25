@@ -10,6 +10,7 @@ type type' =
     | CharT
     | StringT
     | ClosureT
+    | ListT of type' option
 
 and type_env = type' StringMap.t list  
 
@@ -29,13 +30,18 @@ let rec lookup_type_opt name = function
             end
 ;;
 
-let type_of_value = function
+let rec type_of_value = function
     | Int _     -> IntT
     | Float _   -> FloatT
     | Bool _    -> BoolT
     | Char _    -> CharT
     | String _  -> StringT
     | Closure _ -> ClosureT
+    | List l    -> 
+        begin match l with
+        | []      -> ListT None
+        | hd :: _ -> ListT (Some (type_of_value hd))
+        end
 ;;
 
 let tc_comparison = function
@@ -104,6 +110,16 @@ let rec run_tc t_env = function
         begin match lookup_type_opt name t_env with
         | Some ty -> ty
         | None -> fail_tc ("unbound variable " ^ name)
+        end
+    | ListExpr expr_list ->
+        let f = run_tc t_env in
+        let type_list = List.map f expr_list in
+        begin match type_list with
+        | [] -> ListT (None)
+        | hd :: _ ->
+          let items_same_type = List.for_all (fun ty -> ty = hd) type_list in
+          if items_same_type then ListT (Some hd)
+          else fail_tc "list items must be of same type"
         end
     | Let (name, value_expr, body_expr) ->
         let value_type = run_tc t_env value_expr in

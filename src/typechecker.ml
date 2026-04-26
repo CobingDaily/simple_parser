@@ -50,6 +50,7 @@ let tc_comparison = function
     | BoolT, BoolT     -> BoolT
     | CharT, CharT     -> BoolT
     | StringT, StringT -> BoolT
+    | ListT _, ListT _ -> BoolT
     | _ -> fail_tc "incompatible types for comparison"
 ;;
 

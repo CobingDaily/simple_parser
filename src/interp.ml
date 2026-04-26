@@ -38,6 +38,7 @@ let are_values_equal = function
   | Bool a, Bool b     -> Bool (a = b)
   | Char a, Char b     -> Bool (a = b)
   | String a, String b -> Bool (a = b)
+  | List a, List b     -> Bool (a = b)
   | _ -> failwith "incompatible types for comparison"
 ;;
 

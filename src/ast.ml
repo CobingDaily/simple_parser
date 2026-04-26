@@ -77,31 +77,28 @@ and string_of_value = function
     | Bool b -> if b then "true" else "false"
     | Char c -> Printf.sprintf "%C" c
     | String s -> Printf.sprintf "%S" s
-    | Closure (param_name, body, env) ->
-            let s = string_of_expr env body in
+    | Closure (param_name, body, _) ->
+            let s = string_of_expr body in
             Printf.sprintf "%s -> %s" param_name s
     | List l -> string_of_value_list l
 
 
-and string_of_expr env = function
+and string_of_expr = function
     | Value v -> string_of_value v
-    | Var name -> 
-        (match (lookup_opt name !env) with
-                   | None -> name
-                   | Some v -> string_of_value v)
+    | Var name -> name
     | ListExpr le ->
         begin match le with
         | [] -> ""
-        | hd :: tl -> (string_of_expr env hd) ^ ", " ^ (string_of_expr env (ListExpr tl))
+        | hd :: tl -> (string_of_expr hd) ^ ", " ^ (string_of_expr (ListExpr tl))
         end
 
     | UnOp (op, expr) ->
-            let s = string_of_expr env expr in
+            let s = string_of_expr expr in
             (match op with
                 | UnaryMinus -> Printf.sprintf "(-%s)" s)
     | BinOp (op, left, right) ->
-            let l_expr = string_of_expr env left in
-            let r_expr = string_of_expr env right in
+            let l_expr = string_of_expr left in
+            let r_expr = string_of_expr right in
             (match op with
                 | Add    -> Printf.sprintf "(%s + %s)" l_expr r_expr
                 | Sub    -> Printf.sprintf "(%s - %s)" l_expr r_expr
@@ -113,27 +110,27 @@ and string_of_expr env = function
                 | GreaterEqual -> Printf.sprintf "(%s >= %s)" l_expr r_expr
                 | LessEqual    -> Printf.sprintf "(%s <= %s)" l_expr r_expr)
     | Let (name, value, body) ->
-            let value = string_of_expr env value in
-            let body = string_of_expr env body in
+            let value = string_of_expr value in
+            let body = string_of_expr body in
             Printf.sprintf "(let %s = %s in %s)" name value body
     | LetRec (name, value, body) ->
-            let value = string_of_expr env value in
-            let body = string_of_expr env body in
+            let value = string_of_expr value in
+            let body = string_of_expr body in
             Printf.sprintf "(let rec %s = %s in %s)" name value body
     | IfElse (condition_expr, then_expr, other_expr) ->
-            let condition = string_of_expr env condition_expr in
-            let then_s = string_of_expr env then_expr in
-            let other_s = string_of_expr env other_expr in
+            let condition = string_of_expr condition_expr in
+            let then_s = string_of_expr then_expr in
+            let other_s = string_of_expr other_expr in
             Printf.sprintf "(if %s then %s else %s)" condition then_s other_s
     | Func (left, right) ->
-            let right = string_of_expr env right in
+            let right = string_of_expr right in
             Printf.sprintf "(%s -> %s)" left right
     | Apply (function_expr, argument_expr) ->
-            let f = string_of_expr env function_expr in
-            let x = string_of_expr env argument_expr in
+            let f = string_of_expr function_expr in
+            let x = string_of_expr argument_expr in
             Printf.sprintf "(%s %s)" f x
     | Cons (first_expr, rest_expr) ->
-        let first = string_of_expr env first_expr in
-        let rest  = string_of_expr env rest_expr in
+        let first = string_of_expr first_expr in
+        let rest  = string_of_expr rest_expr in
         Printf.sprintf "(%s :: %s)" first rest
 ;;

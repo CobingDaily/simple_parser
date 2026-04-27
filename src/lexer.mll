@@ -4,11 +4,12 @@
 
 let digit = ['0'-'9']
 let alpha = ['a'-'z' 'A'-'Z']
-let alphanum = alpha | digit | '_'
+let alphanum = alpha | digit | '_' | '?'
 let whitespace = [' ' '\t' '\n']
 
 let not_quote = [^ '"'] | "\\\""
 
+let ident = alpha alphanum*
 
 rule token = parse
     | whitespace+                   { token lexbuf }
@@ -41,7 +42,7 @@ rule token = parse
     | "true"                        { BOOL (true) }
     | "false"                       { BOOL (false) }
     | "::"                          { CONS }
-    | alpha alphanum* as id         { IDENT id }
+    | ident as id                   { IDENT id }
     | '+'                           { PLUS }
     | '-'                           { MINUS }
     | '*'                           { TIMES }

@@ -105,7 +105,7 @@ let tc_unop op expr_type =
       end
 ;;
 
-let tc_list = function
+let tc_list_expr = function
   | [] -> ListT (None)
   | (hd :: _) as type_list ->
     let items_same_type = List.for_all (fun ty -> ty = hd) type_list in
@@ -132,7 +132,7 @@ let rec run_tc t_env = function
         end
     | ListExpr expr_list ->
         let type_list = List.map (run_tc t_env) expr_list in
-        tc_list type_list
+        tc_list_expr type_list
     | Cons (first_expr, rest_expr) ->
         let first_type = run_tc t_env first_expr in
         let rest_type  = run_tc t_env rest_expr  in
@@ -183,4 +183,18 @@ let rec run_tc t_env = function
                     else fail_tc "types in both branches of `if` must match"
             | _ -> fail_tc "expected Bool in if (...)"
             end
+    | First (list_expr) ->
+        let list_type = run_tc t_env list_expr in
+        begin match list_type with
+        | ListT (Some ty) -> ty
+        | ListT (None) -> fail_tc "empty list has no `first` item"
+        | _ -> fail_tc "`first` can only be applied to lists"
+        end
+    | Rest (list_expr) ->
+        let list_type = run_tc t_env list_expr in
+        begin match list_type with
+        | ListT (Some _) -> list_type
+        | ListT (None) -> fail_tc "empty list has no `rest` items"
+        | _ -> fail_tc "`rest` can only be applied to lists"
+        end
 ;;

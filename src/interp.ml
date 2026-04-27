@@ -155,6 +155,20 @@ and eval env = function
            | LessEqual    -> is_less_equal
       end in
       do_binop (left_value, right_value)
+  | First (list_expr) ->
+      let list_value = eval env list_expr in
+      begin match list_value with
+      | List ([]) -> failwith "cannot use `first` on empty list"
+      | List (hd :: _) -> hd
+      | _ -> failwith "`first` can only be used on lists"
+      end
+  | Rest (list_expr) ->
+      let list_value = eval env list_expr in
+      begin match list_value with
+      | List ([]) -> failwith "cannot use `rest` on empty list"
+      | List (_ :: tl) -> (List tl)
+      | _ -> failwith "`rest` can only be used on lists"
+      end
 ;;
 
 let interpret expr =

@@ -39,6 +39,8 @@ and expr =
     | Apply of expr * expr             (* function_expr argument_expr *)
     | ListExpr of expr list
     | Cons of expr * expr              (* first_expr, rest_expr *)
+    | First of expr                    (* list_expr *)
+    | Rest of expr                     (* list_expr *)
 ;;
 
 let rec define name value = function
@@ -133,4 +135,10 @@ and string_of_expr = function
         let first = string_of_expr first_expr in
         let rest  = string_of_expr rest_expr in
         Printf.sprintf "(%s :: %s)" first rest
+    | First (list_expr) ->
+        let list_value = string_of_expr list_expr in
+        Printf.sprintf "(first %s)" list_value
+    | Rest (list_expr) ->
+        let list_value = string_of_expr list_expr in
+        Printf.sprintf "(rest %s)" list_value
 ;;

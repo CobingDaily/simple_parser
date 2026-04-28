@@ -44,13 +44,24 @@ let rec type_of_value = function
         end
 ;;
 
-let tc_comparison = function
+let tc_equals = function
     | IntT, IntT       -> BoolT
     | FloatT, FloatT   -> BoolT
     | BoolT, BoolT     -> BoolT
     | CharT, CharT     -> BoolT
     | StringT, StringT -> BoolT
     | ListT _, ListT _ -> BoolT
+    | _ -> fail_tc "incompatible types for comparison"
+;;
+
+(* Used to typecheck all comparisons other than `Equals`
+   Fails when comparing two ListT's (unlike tc_equals) *)
+let tc_comparison = function
+    | IntT, IntT       -> BoolT
+    | FloatT, FloatT   -> BoolT
+    | BoolT, BoolT     -> BoolT
+    | CharT, CharT     -> BoolT
+    | StringT, StringT -> BoolT
     | _ -> fail_tc "incompatible types for comparison"
 ;;
 
@@ -83,16 +94,17 @@ let tc_division = function
 
 
 let tc_binop binop left_type right_type =
-    match binop with
-    | Add -> tc_addition       (left_type, right_type)
-    | Sub -> tc_subtraction    (left_type, right_type)
-    | Mul -> tc_multiplication (left_type, right_type)
-    | Div -> tc_division       (left_type, right_type)
-    | Equals       -> tc_comparison (left_type, right_type)
-    | GreaterThan  -> tc_comparison (left_type, right_type)
-    | LessThan     -> tc_comparison (left_type, right_type)
-    | GreaterEqual -> tc_comparison (left_type, right_type)
-    | LessEqual    -> tc_comparison (left_type, right_type)
+  begin match binop with
+  | Add          -> tc_addition      
+  | Sub          -> tc_subtraction   
+  | Mul          -> tc_multiplication
+  | Div          -> tc_division      
+  | Equals       -> tc_equals
+  | GreaterThan  -> tc_comparison 
+  | LessThan     -> tc_comparison 
+  | GreaterEqual -> tc_comparison 
+  | LessEqual    -> tc_comparison 
+  end @@ (left_type, right_type)
 ;;
 
 let tc_unop op expr_type =

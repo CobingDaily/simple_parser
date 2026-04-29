@@ -9,6 +9,12 @@ in
 
 let sum_1_to_10 = sum [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] in
 
+let prod = xs ->
+  fold_right xs 1 (x -> y -> x * y)
+in
+
+let prod_1_to_10 = prod [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] in
+
 let map = xs -> f ->
   fold_right xs [] (x -> y -> (f x) :: y)
 in
@@ -21,5 +27,5 @@ in
 
 let less_than_five = filter [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] (x -> x < 5) in
 
-less_than_five
+prod_1_to_10
 

@@ -1,0 +1,20 @@
+let reverse = xs ->
+    let rec aux = xs -> acc ->
+        if xs == [] then acc
+        else aux (rest xs) ((first xs) :: acc)
+    in
+    aux xs []
+in
+
+let append_lists = l1 -> l2 ->
+    let l1_rev = reverse l1 in
+    let rec aux = l1 -> l2 ->
+        if l1 == [] then l2
+        else (let hd = (first l1) in
+              let tl = (rest  l1) in
+              aux tl (hd :: l2))
+    in
+    aux l1_rev l2
+in
+
+append_lists [1, 2, 3] [4, 5, 6]

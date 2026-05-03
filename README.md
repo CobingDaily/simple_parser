@@ -76,6 +76,17 @@ true
 >>> (1 :: 2 :: []) == [1, 2]
 true
 ```
+### Std Library
+```
+>>> append_lists [1, 2, 3] [1, 2, 3]
+[1, 2, 3, 1, 2, 3]
+>>> append_lists [1, 2, 3] [1, 2, 3] |> reverse
+[3, 2, 1, 3, 2, 1]
+>>> append_lists [1, 2, 3] [1, 2, 3] |> reverse |> map (x -> x * x)
+[9, 4, 1, 9, 4, 1]
+>>> append_lists [1, 2, 3] [1, 2, 3] |> reverse |> map (x -> x * x) |> sum
+28
+```
 ### Typechecking
 ```
 >>> if (3 > 2) then 4 else 5.2
